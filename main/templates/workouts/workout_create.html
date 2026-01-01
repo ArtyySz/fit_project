@@ -1,0 +1,8 @@
+<h1>Создание тренировки</h1>
+
+<form method="post">
+  {% csrf_token %}
+  <input type="text" name="name" placeholder="Название">
+  <textarea name="description" placeholder="Описание"></textarea>
+  <button type="submit">Создать</button>
+</form>
