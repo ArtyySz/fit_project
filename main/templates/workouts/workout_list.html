@@ -1,0 +1,15 @@
+<h1>Мои тренировки</h1>
+
+<a href="{% url 'workout_create' %}">Создать тренировку</a>
+
+<ul>
+  {% for workout in workouts %}
+    <li>
+      <a href="{% url 'workout_detail' workout.id %}">
+        {{ workout.name }}
+      </a>
+    </li>
+  {% empty %}
+    <li>Тренировок нет</li>
+  {% endfor %}
+</ul>

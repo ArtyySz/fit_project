@@ -1,0 +1,13 @@
+<h1>Упражнения</h1>
+
+<ul>
+  {% for exercise in exercises %}
+    <li>
+      <a href="{% url 'exercise_detail' exercise.id %}">
+        {{ exercise.name }}
+      </a>
+    </li>
+  {% empty %}
+    <li>Нет упражнений</li>
+  {% endfor %}
+</ul>
