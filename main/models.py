@@ -80,7 +80,7 @@ class WorkoutExercise(models.Model):  # Промежуточная модель 
 
 class FavoriteExercise(models.Model):
     user = models.ForeignKey(TempUser, on_delete=models.CASCADE, related_name="favorite_exercises")
-    exercise = models.ForeignKey(Exercise, on_delete=models.CASCADE)
+    exercise = models.ForeignKey(Exercise, on_delete=models.CASCADE, related_name="favorites")
     added_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:

@@ -1,0 +1,10 @@
+<h3>Последние тренировки</h3>
+<ul>
+  {% for item in last_workouts %}
+    <li>
+      {{ item.workout.name }} ({{ item.completed_at|date:"d.m.Y" }})
+    </li>
+  {% empty %}
+    <li>Тренировок пока нет</li>
+  {% endfor %}
+</ul>

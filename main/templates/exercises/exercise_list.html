@@ -1,13 +1,27 @@
 <h1>Упражнения</h1>
 
+<h3>Фильтр по группе мышц</h3>
+<ul>
+  <li><a href="/exercises/">Все</a></li>
+  {% for group in muscle_groups %}
+    <li>
+      <a href="?muscle_group={{ group.id }}">
+        {{ group.name }}
+      </a>
+    </li>
+  {% endfor %}
+</ul>
+
+<hr>
+
 <ul>
   {% for exercise in exercises %}
     <li>
-      <a href="{% url 'exercise_detail' exercise.id %}">
+      <a href="/exercises/{{ exercise.id }}/">
         {{ exercise.name }}
       </a>
     </li>
   {% empty %}
-    <li>Нет упражнений</li>
+    <li>Упражнений нет</li>
   {% endfor %}
 </ul>
