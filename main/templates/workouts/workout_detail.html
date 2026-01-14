@@ -1,0 +1,16 @@
+<h1>{{ workout.name }}</h1>
+<p>{{ workout.description }}</p>
+
+<h3>Упражнения в тренировке</h3>
+<ul>
+  {% for item in exercises %}
+    <li>
+      {{ item.exercise.name }} —
+      {{ item.sets }}x{{ item.reps }}
+    </li>
+  {% empty %}
+    <li>Упражнений пока нет</li>
+  {% endfor %}
+</ul>
+
+<a href="/workouts/{{ workout.id }}/add-exercise/">Добавить упражнение</a>

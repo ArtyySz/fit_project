@@ -1,7 +1,9 @@
 from django.urls import path
 from . import views
+from .views import index
 
 urlpatterns = [
+    path("", index, name="index"),
     path("exercises/", views.exercise_list, name="exercise_list"),
     path("exercises/<int:exercise_id>/", views.exercise_detail, name="exercise_detail"),
     path("exercises/<int:exercise_id>/favorite/", views.toggle_favorite, name="toggle_favorite"),

@@ -1,0 +1,14 @@
+<h1>{{ exercise.name }}</h1>
+
+<p>{{ exercise.description }}</p>
+
+<form method="post" action="/exercises/{{ exercise.id }}/favorite/">
+  {% csrf_token %}
+  {% if is_favorite %}
+    <button type="submit">Убрать из избранного</button>
+  {% else %}
+    <button type="submit">Добавить в избранное</button>
+  {% endif %}
+</form>
+
+<a href="/exercises/">← Назад</a>
