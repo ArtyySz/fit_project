@@ -1,0 +1,40 @@
+<h1>Добавить упражнение в тренировку</h1>
+
+<h3>{{ workout.name }}</h3>
+
+<form method="post">
+  {% csrf_token %}
+
+  <div>
+    <label>Упражнение</label><br>
+    <select name="exercise" required>
+      {% for exercise in exercises %}
+        <option value="{{ exercise.id }}">
+          {{ exercise.name }}
+        </option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <br>
+
+  <div>
+    <label>Подходы</label><br>
+    <input type="number" name="sets" value="3" min="1">
+  </div>
+
+  <br>
+
+  <div>
+    <label>Повторы</label><br>
+    <input type="text" name="reps" value="10-12">
+  </div>
+
+  <br>
+
+  <button type="submit">Добавить</button>
+</form>
+
+<br>
+
+<a href="{% url 'workout_detail' workout.id %}">← Назад к тренировке</a>

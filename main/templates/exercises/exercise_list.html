@@ -17,7 +17,7 @@
 <ul>
   {% for exercise in exercises %}
     <li>
-      <a href="/exercises/{{ exercise.id }}/">
+      {% url 'exercise_detail' exercise.id %}
         {{ exercise.name }}
       </a>
     </li>

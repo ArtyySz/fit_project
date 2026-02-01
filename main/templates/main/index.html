@@ -1,10 +1,37 @@
+<h1>Главная</h1>
+
+<nav>
+  <a href="{% url 'workout_list' %}">Мои тренировки</a> |
+  <a href="{% url 'exercise_list' %}">Упражнения</a>
+</nav>
+
+<hr>
+
 <h3>Последние тренировки</h3>
 <ul>
   {% for item in last_workouts %}
     <li>
-      {{ item.workout.name }} ({{ item.completed_at|date:"d.m.Y" }})
+      {{ item.workout.name }} —
+      {{ item.completed_at|date:"d.m.Y" }}
     </li>
   {% empty %}
     <li>Тренировок пока нет</li>
   {% endfor %}
 </ul>
+
+<hr>
+
+<h3>Популярные упражнения</h3>
+<ul>
+  {% for exercise in popular_exercises %}
+    <li>
+      <a href="{% url 'exercise_detail' exercise.id %}">
+        {{ exercise.name }}
+      </a>
+    </li>
+  {% empty %}
+    <li>Нет данных</li>
+  {% endfor %}
+</ul>
+
+<p>Всего завершённых тренировок: {{ workouts_count }}</p>
