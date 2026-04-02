@@ -1,0 +1,26 @@
+<h1>План тренировок на неделю</h1>
+
+<nav>
+  <a href="{% url 'index' %}">Главная</a> |
+  <a href="{% url 'workout_list' %}">Мои тренировки</a> |
+  <a href="{% url 'exercise_list' %}">Упражнения</a> |
+  <a href="{% url 'favorite_exercises' %}">Избранное</a> |
+  <a href="{% url 'profile' %}">Профиль</a>
+</nav>
+
+<hr>
+
+<ul>
+  {% for day in plan_days %}
+    <li>
+      <strong>{{ day.get_day_of_week_display }}</strong> —
+      {% if day.workout %}
+        {{ day.workout.name }}
+      {% else %}
+        Нет тренировки
+      {% endif %}
+
+      | <a href="{% url 'edit_plan_day' day.id %}">Изменить</a>
+    </li>
+  {% endfor %}
+</ul>
