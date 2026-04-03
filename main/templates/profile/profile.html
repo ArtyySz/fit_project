@@ -1,0 +1,45 @@
+<h1>Профиль</h1>
+
+<nav>
+  <a href="{% url 'index' %}">Главная</a> |
+  <a href="{% url 'workout_list' %}">Мои тренировки</a> |
+  <a href="{% url 'exercise_list' %}">Упражнения</a> |
+  <a href="{% url 'favorite_exercises' %}">Избранное</a> |
+  <a href="{% url 'plan_list' %}">План</a> |
+  <a href="{% url 'premade_workouts' %}">Готовые тренировки</a> |
+  <a href="{% url 'workout_history_list' %}">История</a> |
+</nav>
+
+<hr />
+
+<p>
+  <strong>Имя пользователя:</strong> {{ user.username }}
+</p>
+<p>
+  <strong>Email:</strong> {{ user.email }}
+</p>
+
+<hr />
+
+<h3>Данные профиля</h3>
+<p>ФИО: {{ user.profile.full_name|default:'—' }}</p>
+<p>Возраст: {{ user.profile.age|default:'—' }}</p>
+<p>Вес: {{ user.profile.weight|default:'—' }} кг</p>
+<p>Рост: {{ user.profile.height|default:'—' }} см</p>
+
+<hr />
+
+<h3>Статистика</h3>
+<p>Всего тренировок: {{ user.profile.total_workouts }}</p>
+<p>Всего упражнений: {{ user.profile.total_exercises_done }}</p>
+<p>Последняя тренировка: {{ user.profile.last_workout_date|date:'d.m.Y'|default:'—' }}</p>
+
+<hr />
+
+<a href="{% url 'edit_profile' %}">Редактировать профиль</a>
+<br><br>
+
+<form method="post" action="{% url 'logout' %}">
+  {% csrf_token %}
+  <button type="submit">Выйти</button>
+</form>
