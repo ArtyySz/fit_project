@@ -1,0 +1,13 @@
+<h1>Завершить тренировку</h1>
+
+<h3>{{ workout.name }}</h3>
+<p>Количество упражнений: {{ exercises_count }}</p>
+
+<form method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">Завершить тренировку</button>
+</form>
+
+<br>
+<a href="{% url 'workout_detail' workout.id %}">← Назад к тренировке</a>

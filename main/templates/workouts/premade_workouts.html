@@ -1,0 +1,35 @@
+<h1>Готовые тренировки</h1>
+
+<nav>
+  <a href="{% url 'index' %}">Главная</a> |
+  <a href="{% url 'workout_list' %}">Мои тренировки</a> |
+  <a href="{% url 'exercise_list' %}">Упражнения</a> |
+  <a href="{% url 'favorite_exercises' %}">Избранное</a> |
+  <a href="{% url 'plan_list' %}">План</a> |
+  <a href="{% url 'profile' %}">Профиль</a> |
+
+  <form method="post" action="{% url 'logout' %}" style="display:inline;">
+    {% csrf_token %}
+    <button type="submit">Выйти</button>
+  </form>
+</nav>
+
+<hr>
+
+<ul>
+  {% for workout in workouts %}
+    <li style="margin-bottom: 20px;">
+      <h3>{{ workout.name }}</h3>
+      <p>{{ workout.description }}</p>
+
+      <a href="{% url 'workout_detail' workout.id %}">Открыть</a>
+
+      <form method="post" action="{% url 'copy_premade_workout' workout.id %}" style="display:inline;">
+        {% csrf_token %}
+        <button type="submit">Сохранить себе</button>
+      </form>
+    </li>
+  {% empty %}
+    <li>Готовых тренировок пока нет</li>
+  {% endfor %}
+</ul>

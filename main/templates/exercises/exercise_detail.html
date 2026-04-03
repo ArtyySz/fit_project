@@ -1,8 +1,62 @@
 <h1>{{ exercise.name }}</h1>
 
+<nav>
+  <a href="{% url 'index' %}">Главная</a> |
+  <a href="{% url 'exercise_list' %}">Упражнения</a> |
+  <a href="{% url 'favorite_exercises' %}">Избранное</a> |
+  <a href="{% url 'workout_list' %}">Мои тренировки</a> |
+  <a href="{% url 'plan_list' %}">План</a> |
+  <a href="{% url 'premade_workouts' %}">Готовые тренировки</a> |
+  <a href="{% url 'profile' %}">Профиль</a> |
+
+  <form method="post" action="{% url 'logout' %}" style="display:inline;">
+    {% csrf_token %}
+    <button type="submit">Выйти</button>
+  </form>
+</nav>
+
+<hr>
+
+<p><strong>Описание:</strong></p>
 <p>{{ exercise.description }}</p>
 
-<form method="post" action="/exercises/{{ exercise.id }}/favorite/">
+<hr>
+
+<p>
+  <strong>Группы мышц:</strong>
+  {% for group in exercise.muscle_groups.all %}
+    {{ group.name }}{% if not forloop.last %}, {% endif %}
+  {% empty %}
+    —
+  {% endfor %}
+</p>
+
+<p>
+  <strong>Сложность:</strong>
+  {% if exercise.difficulty == "beginner" %}
+    Начинающий
+  {% elif exercise.difficulty == "intermediate" %}
+    Средний
+  {% elif exercise.difficulty == "advanced" %}
+    Продвинутый
+  {% else %}
+    —
+  {% endif %}
+</p>
+
+<p>
+  <strong>Оборудование:</strong><br>
+  {{ exercise.equipment|default:"—" }}
+</p>
+
+<hr>
+
+<p><strong>Шаги выполнения:</strong></p>
+<p style="white-space: pre-line;">{{ exercise.execution_steps }}</p>
+
+<hr>
+
+<form method="post" action="{% url 'toggle_favorite' exercise.id %}">
   {% csrf_token %}
   {% if is_favorite %}
     <button type="submit">Убрать из избранного</button>
@@ -11,4 +65,6 @@
   {% endif %}
 </form>
 
-<a href="/exercises/">← Назад</a>
+<br>
+
+<a href="{% url 'exercise_list' %}">← Назад к упражнениям</a>

@@ -1,13 +1,10 @@
 from django.db import models
+from django.contrib.auth.models import User
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+
 
 # Create your models here.
-
-class TempUser(models.Model):
-    username = models.CharField(max_length=150, unique=True)
-    email = models.EmailField(blank=True)
-
-    def __str__(self):
-        return self.username
 class MuscleGroup(models.Model):
     name = models.CharField(max_length=100, verbose_name="Название группы мышц")
     description = models.TextField(blank=True, verbose_name="Описание")
@@ -45,7 +42,7 @@ class Exercise(models.Model):
 
 class Workout(models.Model):
     name = models.CharField(max_length=200, verbose_name="Название тренировки")
-    creator = models.ForeignKey(TempUser, on_delete=models.CASCADE, verbose_name="Создатель")
+    creator = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Создатель")
     is_premade = models.BooleanField(default=False, verbose_name="Готовая тренировка?")
     description = models.TextField(blank=True, verbose_name="Описание тренировки")
     created_at = models.DateTimeField(auto_now_add=True)
@@ -79,7 +76,7 @@ class WorkoutExercise(models.Model):  # Промежуточная модель 
 
 
 class FavoriteExercise(models.Model):
-    user = models.ForeignKey(TempUser, on_delete=models.CASCADE, related_name="favorite_exercises")
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="favorite_exercises")
     exercise = models.ForeignKey(Exercise, on_delete=models.CASCADE, related_name="favorites")
     added_at = models.DateTimeField(auto_now_add=True)
 
@@ -94,7 +91,7 @@ class FavoriteExercise(models.Model):
 
 class Profile(models.Model):
     # OneToOne связь со встроенной моделью User
-    user = models.OneToOneField(TempUser, on_delete=models.CASCADE, primary_key=True, related_name="profile")
+    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True, related_name="profile")
     full_name = models.CharField(max_length=200, blank=True, verbose_name="ФИО")
     weight = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True, verbose_name="Вес (кг)")
     height = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True, verbose_name="Рост (см)")
@@ -112,7 +109,7 @@ class Profile(models.Model):
 
 
 class WorkoutHistory(models.Model):
-    user = models.ForeignKey(TempUser, on_delete=models.CASCADE, related_name="workout_history")
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="workout_history")
     workout = models.ForeignKey(Workout, on_delete=models.SET_NULL, null=True, verbose_name="Тренировка")
     completed_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата и время завершения")
     duration_minutes = models.PositiveIntegerField(verbose_name="Длительность (минуты)")
@@ -137,7 +134,7 @@ class PlanDay(models.Model):
         (6, 'Суббота'),
         (7, 'Воскресенье'),
     ]
-    user = models.ForeignKey(TempUser, on_delete=models.CASCADE, related_name="training_plan")
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="training_plan")
     day_of_week = models.IntegerField(choices=DAYS_OF_WEEK, verbose_name="День недели")
     muscle_group = models.ForeignKey(MuscleGroup, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Группа мышц")
     workout = models.ForeignKey(Workout, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Тренировка")
