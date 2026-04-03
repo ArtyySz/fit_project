@@ -1,0 +1,31 @@
+<h1>Детали завершённой тренировки</h1>
+
+<nav>
+  <a href="{% url 'index' %}">Главная</a> |
+  <a href="{% url 'workout_history_list' %}">История</a> |
+  <a href="{% url 'workout_list' %}">Мои тренировки</a> |
+  <a href="{% url 'profile' %}">Профиль</a>
+</nav>
+
+<hr>
+
+<h2>{{ history_item.workout.name }}</h2>
+<p><strong>Дата выполнения:</strong> {{ history_item.completed_at|date:"d.m.Y H:i" }}</p>
+<p><strong>Длительность:</strong> {{ history_item.duration_minutes }} мин</p>
+
+<hr>
+
+<h3>Упражнения</h3>
+
+<ul>
+  {% for item in workout_exercises %}
+    <li>
+      {{ item.exercise.name }} — {{ item.sets }}x{{ item.reps }}
+    </li>
+  {% empty %}
+    <li>Упражнений нет</li>
+  {% endfor %}
+</ul>
+
+<br>
+<a href="{% url 'workout_history_list' %}">← Назад к истории</a>

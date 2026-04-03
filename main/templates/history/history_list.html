@@ -1,0 +1,31 @@
+<h1>История тренировок</h1>
+
+<nav>
+  <a href="{% url 'index' %}">Главная</a> |
+  <a href="{% url 'workout_list' %}">Мои тренировки</a> |
+  <a href="{% url 'plan_list' %}">План</a> |
+  <a href="{% url 'profile' %}">Профиль</a> |
+  <a href="{% url 'favorite_exercises' %}">Избранное</a> |
+
+  <form method="post" action="{% url 'logout' %}" style="display:inline;">
+    {% csrf_token %}
+    <button type="submit">Выйти</button>
+  </form>
+</nav>
+
+<hr>
+
+<ul>
+  {% for item in history %}
+    <li>
+      <a href="{% url 'workout_history_detail' item.id %}">
+        <strong>{{ item.workout.name }}</strong>
+      </a><br>
+      Дата: {{ item.completed_at|date:"d.m.Y H:i" }}<br>
+      Длительность: {{ item.duration_minutes }} мин
+    </li>
+    <br>
+  {% empty %}
+    <li>История тренировок пока пуста</li>
+  {% endfor %}
+</ul>
