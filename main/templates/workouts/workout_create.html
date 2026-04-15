@@ -1,10 +1,19 @@
-<h1>Создание тренировки</h1>
+{% extends "main/base.html" %}
 
-<form method="post">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit">Создать</button>
-</form>
+{% block title %}Создание тренировки | FitFlow{% endblock %}
+{% block eyebrow %}Тренировки{% endblock %}
+{% block page_title %}Создание тренировки{% endblock %}
+{% block page_subtitle %}Заполни название и описание, а затем перейди к упражнениям.{% endblock %}
 
-<br>
-<a href="{% url 'workout_list' %}">← Назад к тренировкам</a>
+{% block content %}
+    <section class="panel form-panel auth-panel">
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <div class="button-row">
+                <button type="submit">Создать</button>
+                <a class="button-link secondary" href="{% url 'workout_list' %}">Назад к тренировкам</a>
+            </div>
+        </form>
+    </section>
+{% endblock %}

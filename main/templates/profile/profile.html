@@ -1,45 +1,79 @@
-<h1>Профиль</h1>
+{% extends "main/base.html" %}
 
-<nav>
-  <a href="{% url 'index' %}">Главная</a> |
-  <a href="{% url 'workout_list' %}">Мои тренировки</a> |
-  <a href="{% url 'exercise_list' %}">Упражнения</a> |
-  <a href="{% url 'favorite_exercises' %}">Избранное</a> |
-  <a href="{% url 'plan_list' %}">План</a> |
-  <a href="{% url 'premade_workouts' %}">Готовые тренировки</a> |
-  <a href="{% url 'workout_history_list' %}">История</a> |
-</nav>
+{% block title %}Профиль | FitFlow{% endblock %}
+{% block eyebrow %}Профиль{% endblock %}
+{% block page_title %}Профиль{% endblock %}
+{% block page_subtitle %}Основные данные пользователя и краткая статистика прогресса.{% endblock %}
 
-<hr />
+{% block content %}
+    <section class="profile-grid">
+        <article class="panel">
+            <div class="section-header">
+                <div>
+                    <h2>Личные данные</h2>
+                    <p>Всё, что относится к твоему аккаунту и параметрам.</p>
+                </div>
+                <a class="button-link" href="{% url 'edit_profile' %}">Редактировать профиль</a>
+            </div>
 
-<p>
-  <strong>Имя пользователя:</strong> {{ user.username }}
-</p>
-<p>
-  <strong>Email:</strong> {{ user.email }}
-</p>
+            <div class="details-grid">
+                <div class="detail-box">
+                    <strong>Имя пользователя</strong>
+                    <div>{{ user.username }}</div>
+                </div>
+                <div class="detail-box">
+                    <strong>Email</strong>
+                    <div>{{ user.email|default:"—" }}</div>
+                </div>
+                <div class="detail-box">
+                    <strong>ФИО</strong>
+                    <div>{{ user.profile.full_name|default:"—" }}</div>
+                </div>
+                <div class="detail-box">
+                    <strong>Возраст</strong>
+                    <div>{{ user.profile.age|default:"—" }}</div>
+                </div>
+                <div class="detail-box">
+                    <strong>Вес</strong>
+                    <div>{{ user.profile.weight|default:"—" }} кг</div>
+                </div>
+                <div class="detail-box">
+                    <strong>Рост</strong>
+                    <div>{{ user.profile.height|default:"—" }} см</div>
+                </div>
+            </div>
+        </article>
 
-<hr />
+        <article class="panel">
+            <div class="section-header">
+                <div>
+                    <h2>Статистика</h2>
+                    <p>Короткий срез текущего прогресса.</p>
+                </div>
+            </div>
 
-<h3>Данные профиля</h3>
-<p>ФИО: {{ user.profile.full_name|default:'—' }}</p>
-<p>Возраст: {{ user.profile.age|default:'—' }}</p>
-<p>Вес: {{ user.profile.weight|default:'—' }} кг</p>
-<p>Рост: {{ user.profile.height|default:'—' }} см</p>
+            <div class="stats-inline">
+                <article class="content-card">
+                    <span class="tag">Тренировки</span>
+                    <h3>{{ user.profile.total_workouts }}</h3>
+                    <p>Всего завершённых тренировок.</p>
+                </article>
+                <article class="content-card">
+                    <span class="tag alt">Упражнения</span>
+                    <h3>{{ user.profile.total_exercises_done }}</h3>
+                    <p>Всего выполненных упражнений.</p>
+                </article>
+                <article class="content-card">
+                    <span class="tag violet">Последняя сессия</span>
+                    <h3>{{ user.profile.last_workout_date|date:'d.m.Y'|default:'—' }}</h3>
+                    <p>Дата последней завершённой тренировки.</p>
+                </article>
+            </div>
 
-<hr />
-
-<h3>Статистика</h3>
-<p>Всего тренировок: {{ user.profile.total_workouts }}</p>
-<p>Всего упражнений: {{ user.profile.total_exercises_done }}</p>
-<p>Последняя тренировка: {{ user.profile.last_workout_date|date:'d.m.Y'|default:'—' }}</p>
-
-<hr />
-
-<a href="{% url 'edit_profile' %}">Редактировать профиль</a>
-<br><br>
-
-<form method="post" action="{% url 'logout' %}">
-  {% csrf_token %}
-  <button type="submit">Выйти</button>
-</form>
+            <form method="post" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button type="submit" class="secondary">Выйти</button>
+            </form>
+        </article>
+    </section>
+{% endblock %}

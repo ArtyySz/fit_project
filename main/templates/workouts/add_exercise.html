@@ -1,11 +1,19 @@
-<h1>Добавить упражнение в тренировку</h1>
-<h3>{{ workout.name }}</h3>
+{% extends "main/base.html" %}
 
-<form method="post">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit">Добавить</button>
-</form>
+{% block title %}Добавить упражнение | FitFlow{% endblock %}
+{% block eyebrow %}Тренировки{% endblock %}
+{% block page_title %}Добавить упражнение{% endblock %}
+{% block page_subtitle %}Тренировка: {{ workout.name }}{% endblock %}
 
-<br>
-<a href="{% url 'workout_detail' workout.id %}">← Назад к тренировке</a>
+{% block content %}
+    <section class="panel form-panel auth-panel">
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <div class="button-row">
+                <button type="submit">Добавить</button>
+                <a class="button-link secondary" href="{% url 'workout_detail' workout.id %}">Назад к тренировке</a>
+            </div>
+        </form>
+    </section>
+{% endblock %}

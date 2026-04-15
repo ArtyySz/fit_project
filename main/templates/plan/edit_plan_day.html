@@ -1,12 +1,19 @@
-<h1>Редактировать день плана</h1>
+{% extends "main/base.html" %}
 
-<p><strong>День:</strong> {{ plan_day.get_day_of_week_display }}</p>
+{% block title %}Редактировать день плана | FitFlow{% endblock %}
+{% block eyebrow %}План{% endblock %}
+{% block page_title %}Редактировать день плана{% endblock %}
+{% block page_subtitle %}День: {{ plan_day.get_day_of_week_display }}{% endblock %}
 
-<form method="post">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit">Сохранить</button>
-</form>
-
-<br>
-<a href="{% url 'plan_list' %}">← Назад к плану</a>
+{% block content %}
+    <section class="panel form-panel auth-panel">
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <div class="button-row">
+                <button type="submit">Сохранить</button>
+                <a class="button-link secondary" href="{% url 'plan_list' %}">Назад к плану</a>
+            </div>
+        </form>
+    </section>
+{% endblock %}

@@ -1,47 +1,60 @@
-<h1>{{ workout.name }}</h1>
+{% extends "main/base.html" %}
 
-<nav>
-  <a href="{% url 'index' %}">Главная</a> |
-  <a href="{% url 'workout_list' %}">Мои тренировки</a> |
-  <a href="{% url 'profile' %}">Профиль</a> |
-  <a href="{% url 'favorite_exercises' %}">Избранное</a> |
-  <a href="{% url 'exercise_list' %}">Упражнения</a>
-</nav>
+{% block title %}{{ workout.name }} | FitFlow{% endblock %}
+{% block eyebrow %}Тренировка{% endblock %}
+{% block page_title %}{{ workout.name }}{% endblock %}
+{% block page_subtitle %}Детальная настройка тренировки и список добавленных упражнений.{% endblock %}
 
-<hr>
+{% block content %}
+    <section class="panel">
+        <div class="section-header">
+            <div>
+                <h2>Описание</h2>
+                <p>{{ workout.description|default:"Пока без описания, но тренировка уже готова к наполнению." }}</p>
+            </div>
+            <div class="button-row">
+                <a class="button-link" href="{% url 'add_exercise_to_workout' workout.id %}">Добавить упражнение</a>
+                <a class="button-link secondary" href="{% url 'edit_workout' workout.id %}">Редактировать</a>
+                <a class="button-link secondary" href="{% url 'complete_workout' workout.id %}">Завершить тренировку</a>
+            </div>
+        </div>
+    </section>
 
-<p>{{ workout.description }}</p>
+    <section class="panel">
+        <div class="section-header">
+            <div>
+                <h2>Упражнения в тренировке</h2>
+                <p>Текущий порядок и параметры повторений.</p>
+            </div>
+        </div>
 
-<h3>Упражнения в тренировке</h3>
-<ul>
-  {% for item in exercises %}
-    <li>
-      {{ item.exercise.name }} —
-      {{ item.sets }}x{{ item.reps }}
+        <div class="stack-list">
+            {% for item in exercises %}
+                <div class="stack-item">
+                    <div>
+                        <strong>{{ item.exercise.name }}</strong>
+                        <span class="muted">{{ item.sets }} подходов x {{ item.reps }} повторений</span>
+                    </div>
 
-      <form method="post" action="{% url 'delete_workout_exercise' item.id %}" style="display:inline;">
-        {% csrf_token %}
-        <button type="submit">Удалить</button>
-      </form>
-    </li>
-  {% empty %}
-    <li>Упражнений пока нет</li>
-  {% endfor %}
-</ul>
+                    <form class="inline-form" method="post" action="{% url 'delete_workout_exercise' item.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="secondary">Удалить</button>
+                    </form>
+                </div>
+            {% empty %}
+                <div class="empty-state">Упражнений пока нет.</div>
+            {% endfor %}
+        </div>
+    </section>
 
-<hr>
+    <section class="panel">
+        <div class="button-row">
+            <a class="button-link secondary" href="{% url 'workout_list' %}">Назад к тренировкам</a>
 
-<a href="{% url 'add_exercise_to_workout' workout.id %}">Добавить упражнение</a>
-<br><br>
-<a href="{% url 'edit_workout' workout.id %}">Редактировать тренировку</a>
-<br><br>
-<a href="{% url 'complete_workout' workout.id %}">Завершить тренировку</a>
-
-<br><br>
-
-<form method="post" action="{% url 'delete_workout' workout.id %}">
-  {% csrf_token %}
-  <button type="submit" onclick="return confirm('Удалить тренировку?')">
-    Удалить тренировку
-  </button>
-</form>
+            <form class="inline-form" method="post" action="{% url 'delete_workout' workout.id %}">
+                {% csrf_token %}
+                <button type="submit" class="danger" onclick="return confirm('Удалить тренировку?')">Удалить тренировку</button>
+            </form>
+        </div>
+    </section>
+{% endblock %}

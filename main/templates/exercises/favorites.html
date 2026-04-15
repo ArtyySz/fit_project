@@ -1,28 +1,24 @@
-<h1>Избранные упражнения</h1>
+{% extends "main/base.html" %}
 
-<nav>
-  <a href="{% url 'index' %}">Главная</a> |
-  <a href="{% url 'exercise_list' %}">Упражнения</a> |
-  <a href="{% url 'workout_list' %}">Мои тренировки</a> |
-  <a href="{% url 'plan_list' %}">План</a> |
-  <a href="{% url 'profile' %}">Профиль</a> |
+{% block title %}Избранное | FitFlow{% endblock %}
+{% block eyebrow %}Избранное{% endblock %}
+{% block page_title %}Избранные упражнения{% endblock %}
+{% block page_subtitle %}Быстрый доступ к упражнениям, которые ты отметил для себя.{% endblock %}
 
-  <form method="post" action="{% url 'logout' %}" style="display:inline;">
-    {% csrf_token %}
-    <button type="submit">Выйти</button>
-  </form>
-</nav>
-
-<hr>
-
-<ul>
-  {% for item in favorites %}
-    <li>
-      <a href="{% url 'exercise_detail' item.exercise.id %}">
-        {{ item.exercise.name }}
-      </a>
-    </li>
-  {% empty %}
-    <li>У тебя пока нет избранных упражнений</li>
-  {% endfor %}
-</ul>
+{% block content %}
+    <section class="panel">
+        <div class="card-grid">
+            {% for item in favorites %}
+                <article class="content-card">
+                    <span class="tag violet">Избранное</span>
+                    <h3>{{ item.exercise.name }}</h3>
+                    <div class="button-row">
+                        <a class="button-link secondary" href="{% url 'exercise_detail' item.exercise.id %}">Открыть</a>
+                    </div>
+                </article>
+            {% empty %}
+                <div class="empty-state">У тебя пока нет избранных упражнений.</div>
+            {% endfor %}
+        </div>
+    </section>
+{% endblock %}
