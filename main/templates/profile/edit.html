@@ -1,12 +1,19 @@
-<h1>Редактирование профиля</h1>
+{% extends "main/base.html" %}
 
-<form method="post">
-  {% csrf_token %}
-  {{ form.as_p }}
+{% block title %}Редактирование профиля | FitFlow{% endblock %}
+{% block eyebrow %}Профиль{% endblock %}
+{% block page_title %}Редактирование профиля{% endblock %}
+{% block page_subtitle %}Обнови персональные данные и сохрани изменения.{% endblock %}
 
-  <button type="submit">Сохранить</button>
-</form>
-
-<br>
-
-<a href="{% url 'profile' %}">← Назад в профиль</a>
+{% block content %}
+    <section class="panel form-panel auth-panel">
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <div class="button-row">
+                <button type="submit">Сохранить</button>
+                <a class="button-link secondary" href="{% url 'profile' %}">Назад в профиль</a>
+            </div>
+        </form>
+    </section>
+{% endblock %}

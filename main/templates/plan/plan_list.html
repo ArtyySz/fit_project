@@ -1,26 +1,28 @@
-<h1>План тренировок на неделю</h1>
+{% extends "main/base.html" %}
 
-<nav>
-  <a href="{% url 'index' %}">Главная</a> |
-  <a href="{% url 'workout_list' %}">Мои тренировки</a> |
-  <a href="{% url 'exercise_list' %}">Упражнения</a> |
-  <a href="{% url 'favorite_exercises' %}">Избранное</a> |
-  <a href="{% url 'profile' %}">Профиль</a>
-</nav>
+{% block title %}План тренировок | FitFlow{% endblock %}
+{% block eyebrow %}План{% endblock %}
+{% block page_title %}План тренировок на неделю{% endblock %}
+{% block page_subtitle %}Распредели свои тренировки по дням и держи неделю под контролем.{% endblock %}
 
-<hr>
-
-<ul>
-  {% for day in plan_days %}
-    <li>
-      <strong>{{ day.get_day_of_week_display }}</strong> —
-      {% if day.workout %}
-        {{ day.workout.name }}
-      {% else %}
-        Нет тренировки
-      {% endif %}
-
-      | <a href="{% url 'edit_plan_day' day.id %}">Изменить</a>
-    </li>
-  {% endfor %}
-</ul>
+{% block content %}
+    <section class="panel">
+        <div class="card-grid">
+            {% for day in plan_days %}
+                <article class="content-card">
+                    <span class="tag orange">{{ day.get_day_of_week_display }}</span>
+                    <h3>
+                        {% if day.workout %}
+                            {{ day.workout.name }}
+                        {% else %}
+                            Нет тренировки
+                        {% endif %}
+                    </h3>
+                    <div class="button-row">
+                        <a class="button-link secondary" href="{% url 'edit_plan_day' day.id %}">Изменить</a>
+                    </div>
+                </article>
+            {% endfor %}
+        </div>
+    </section>
+{% endblock %}

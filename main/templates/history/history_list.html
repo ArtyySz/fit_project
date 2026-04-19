@@ -1,31 +1,26 @@
-<h1>История тренировок</h1>
+{% extends "main/base.html" %}
 
-<nav>
-  <a href="{% url 'index' %}">Главная</a> |
-  <a href="{% url 'workout_list' %}">Мои тренировки</a> |
-  <a href="{% url 'plan_list' %}">План</a> |
-  <a href="{% url 'profile' %}">Профиль</a> |
-  <a href="{% url 'favorite_exercises' %}">Избранное</a> |
+{% block title %}История тренировок | FitFlow{% endblock %}
+{% block eyebrow %}История{% endblock %}
+{% block page_title %}История тренировок{% endblock %}
+{% block page_subtitle %}Все завершённые сессии в хронологическом порядке.{% endblock %}
 
-  <form method="post" action="{% url 'logout' %}" style="display:inline;">
-    {% csrf_token %}
-    <button type="submit">Выйти</button>
-  </form>
-</nav>
-
-<hr>
-
-<ul>
-  {% for item in history %}
-    <li>
-      <a href="{% url 'workout_history_detail' item.id %}">
-        <strong>{{ item.workout.name }}</strong>
-      </a><br>
-      Дата: {{ item.completed_at|date:"d.m.Y H:i" }}<br>
-      Длительность: {{ item.duration_minutes }} мин
-    </li>
-    <br>
-  {% empty %}
-    <li>История тренировок пока пуста</li>
-  {% endfor %}
-</ul>
+{% block content %}
+    <section class="panel">
+        <ul class="stack-list">
+            {% for item in history %}
+                <li class="stack-item">
+                    <div>
+                        <strong>
+                            <a class="text-link" href="{% url 'workout_history_detail' item.id %}">{{ item.workout.name }}</a>
+                        </strong>
+                        <span class="muted">Дата: {{ item.completed_at|date:"d.m.Y H:i" }}</span>
+                    </div>
+                    <span class="pill">{{ item.duration_minutes }} мин</span>
+                </li>
+            {% empty %}
+                <li class="empty-state">История тренировок пока пуста.</li>
+            {% endfor %}
+        </ul>
+    </section>
+{% endblock %}

@@ -1,85 +1,85 @@
-<h1>Упражнения</h1>
+{% extends "main/base.html" %}
 
-<nav>
-  <a href="{% url 'index' %}">Главная</a> |
-  <a href="{% url 'workout_list' %}">Мои тренировки</a> |
-  <a href="{% url 'favorite_exercises' %}">Избранное</a> |
-  <a href="{% url 'plan_list' %}">План</a> |
-  <a href="{% url 'premade_workouts' %}">Готовые тренировки</a> |
-  <a href="{% url 'workout_history_list' %}">История</a> |
-  <a href="{% url 'profile' %}">Профиль</a> |
+{% block title %}Упражнения | FitFlow{% endblock %}
+{% block eyebrow %}Упражнения{% endblock %}
+{% block page_title %}Каталог упражнений{% endblock %}
+{% block page_subtitle %}Поиск, фильтрация и быстрый переход к детальной карточке упражнения.{% endblock %}
 
-  <form method="post" action="{% url 'logout' %}" style="display:inline;">
-    {% csrf_token %}
-    <button type="submit">Выйти</button>
-  </form>
-</nav>
+{% block content %}
+    <section class="panel">
+        <div class="section-header">
+            <div>
+                <h2>Поиск и фильтры</h2>
+                <p>Настрой подборку так, как удобно именно тебе.</p>
+            </div>
+        </div>
 
-<hr>
+        <form class="filter-form" method="get">
+            <div class="filter-grid">
+                <div>
+                    <label for="search">Поиск по названию</label>
+                    <input id="search" type="text" name="search" value="{{ search_query|default:'' }}" placeholder="Например: жим">
+                </div>
 
-<h3>Поиск и фильтры</h3>
+                <div>
+                    <label for="muscle_group">Группа мышц</label>
+                    <select id="muscle_group" name="muscle_group">
+                        <option value="">Все</option>
+                        {% for group in muscle_groups %}
+                            <option value="{{ group.id }}" {% if selected_muscle_group == group.id|stringformat:"s" %}selected{% endif %}>
+                                {{ group.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
 
-<form method="get">
-  <div>
-    <label>Поиск по названию:</label><br>
-    <input type="text" name="search" value="{{ search_query|default:'' }}" placeholder="Например: жим">
-  </div>
+                <div>
+                    <label for="difficulty">Сложность</label>
+                    <select id="difficulty" name="difficulty">
+                        <option value="">Все</option>
+                        <option value="beginner" {% if selected_difficulty == "beginner" %}selected{% endif %}>Начинающий</option>
+                        <option value="intermediate" {% if selected_difficulty == "intermediate" %}selected{% endif %}>Средний</option>
+                        <option value="advanced" {% if selected_difficulty == "advanced" %}selected{% endif %}>Продвинутый</option>
+                    </select>
+                </div>
 
-  <br>
+                <div>
+                    <label for="sort">Сортировка</label>
+                    <select id="sort" name="sort">
+                        <option value="">Без сортировки</option>
+                        <option value="name_asc" {% if selected_sort == "name_asc" %}selected{% endif %}>Название (А-Я)</option>
+                        <option value="name_desc" {% if selected_sort == "name_desc" %}selected{% endif %}>Название (Я-А)</option>
+                    </select>
+                </div>
+            </div>
 
-  <div>
-    <label>Группа мышц:</label><br>
-    <select name="muscle_group">
-      <option value="">Все</option>
-      {% for group in muscle_groups %}
-        <option value="{{ group.id }}" {% if selected_muscle_group == group.id|stringformat:"s" %}selected{% endif %}>
-          {{ group.name }}
-        </option>
-      {% endfor %}
-    </select>
-  </div>
+            <div class="button-row">
+                <button type="submit">Применить</button>
+                <a class="button-link secondary" href="{% url 'exercise_list' %}">Сбросить</a>
+            </div>
+        </form>
+    </section>
 
-  <br>
+    <section class="panel">
+        <div class="section-header">
+            <div>
+                <h2>Список упражнений</h2>
+                <p>Все доступные карточки в текущей выборке.</p>
+            </div>
+        </div>
 
-  <div>
-    <label>Сложность:</label><br>
-    <select name="difficulty">
-      <option value="">Все</option>
-      <option value="beginner" {% if selected_difficulty == "beginner" %}selected{% endif %}>Начинающий</option>
-      <option value="intermediate" {% if selected_difficulty == "intermediate" %}selected{% endif %}>Средний</option>
-      <option value="advanced" {% if selected_difficulty == "advanced" %}selected{% endif %}>Продвинутый</option>
-    </select>
-  </div>
-
-  <br>
-
-  <div>
-    <label>Сортировка:</label><br>
-    <select name="sort">
-      <option value="">Без сортировки</option>
-      <option value="name_asc" {% if selected_sort == "name_asc" %}selected{% endif %}>Название (А-Я)</option>
-      <option value="name_desc" {% if selected_sort == "name_desc" %}selected{% endif %}>Название (Я-А)</option>
-    </select>
-  </div>
-
-  <br>
-
-  <button type="submit">Применить</button>
-  <a href="{% url 'exercise_list' %}">Сбросить</a>
-</form>
-
-<hr>
-
-<h3>Список упражнений</h3>
-
-<ul>
-  {% for exercise in exercises %}
-    <li>
-      <a href="{% url 'exercise_detail' exercise.id %}">
-        {{ exercise.name }}
-      </a>
-    </li>
-  {% empty %}
-    <li>Упражнения не найдены</li>
-  {% endfor %}
-</ul>
+        <div class="card-grid">
+            {% for exercise in exercises %}
+                <article class="content-card">
+                    <span class="tag alt">Упражнение</span>
+                    <h3>{{ exercise.name }}</h3>
+                    <div class="button-row">
+                        <a class="button-link secondary" href="{% url 'exercise_detail' exercise.id %}">Открыть</a>
+                    </div>
+                </article>
+            {% empty %}
+                <div class="empty-state">Упражнения не найдены.</div>
+            {% endfor %}
+        </div>
+    </section>
+{% endblock %}

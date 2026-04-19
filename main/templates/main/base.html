@@ -1,0 +1,130 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}FitFlow{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+</head>
+<body>
+    {% with current=request.resolver_match.url_name|default:'' %}
+        <div class="app-shell">
+            <aside class="sidebar">
+                <a class="brand" href="{% url 'index' %}">
+                    <span class="brand-badge">FF</span>
+                    <span class="brand-copy">
+                        <strong>FitFlow</strong>
+                        <span>Фитнес-панель</span>
+                    </span>
+                </a>
+
+                <nav class="sidebar-nav">
+                    <a class="nav-link {% if current == 'index' %}is-active{% endif %}" href="{% url 'index' %}">
+                        <span>Главная</span>
+                    </a>
+                    <a class="nav-link {% if 'workout' in current and 'history' not in current %}is-active{% endif %}" href="{% url 'workout_list' %}">
+                        <span>Тренировки</span>
+                    </a>
+                    <a class="nav-link {% if 'exercise' in current and 'favorite' not in current %}is-active{% endif %}" href="{% url 'exercise_list' %}">
+                        <span>Упражнения</span>
+                    </a>
+                    <a class="nav-link {% if 'favorite' in current %}is-active{% endif %}" href="{% url 'favorite_exercises' %}">
+                        <span>Избранное</span>
+                    </a>
+                    <a class="nav-link {% if 'plan' in current %}is-active{% endif %}" href="{% url 'plan_list' %}">
+                        <span>План</span>
+                    </a>
+                    <a class="nav-link {% if current == 'premade_workouts' %}is-active{% endif %}" href="{% url 'premade_workouts' %}">
+                        <span>Готовые тренировки</span>
+                    </a>
+                    <a class="nav-link {% if 'history' in current %}is-active{% endif %}" href="{% url 'workout_history_list' %}">
+                        <span>История</span>
+                    </a>
+                    <a class="nav-link {% if 'profile' in current %}is-active{% endif %}" href="{% url 'profile' %}">
+                        <span>Профиль</span>
+                    </a>
+                </nav>
+
+                <div class="sidebar-footer">
+                    {% if request.user.is_authenticated %}
+                        <div class="sidebar-user">
+                            <span class="avatar-pill">{{ request.user.username|first|upper }}</span>
+                            <div>
+                                <strong>{{ request.user.username }}</strong>
+                                <span>Готов к тренировке</span>
+                            </div>
+                        </div>
+
+                        <form method="post" action="{% url 'logout' %}">
+                            {% csrf_token %}
+                            <button type="submit" class="sidebar-logout">Выйти</button>
+                        </form>
+                    {% else %}
+                        <div class="sidebar-user">
+                            <span class="avatar-pill">G</span>
+                            <div>
+                                <strong>Гость</strong>
+                                <span>Войдите, чтобы сохранить прогресс</span>
+                            </div>
+                        </div>
+
+                        <div class="sidebar-auth">
+                            <a class="button-link secondary" href="{% url 'login' %}">Войти</a>
+                            <a class="button-link" href="{% url 'register' %}">Регистрация</a>
+                        </div>
+                    {% endif %}
+                </div>
+            </aside>
+
+            <div class="main-shell">
+                <header class="topbar panel">
+                    <div>
+                        <p class="eyebrow">{% block eyebrow %}Панель управления{% endblock %}</p>
+                        <h1 class="page-title">{% block page_title %}FitFlow{% endblock %}</h1>
+                        <p class="page-subtitle">{% block page_subtitle %}Построй свое тело мечты.{% endblock %}</p>
+                    </div>
+
+                    <div class="topbar-user">
+                        <span class="avatar-pill">
+                            {% if request.user.is_authenticated %}
+                                {{ request.user.username|first|upper }}
+                            {% else %}
+                                F
+                            {% endif %}
+                        </span>
+                        <div>
+                            <strong>
+                                {% if request.user.is_authenticated %}
+                                    {{ request.user.username }}
+                                {% else %}
+                                    FitFlow
+                                {% endif %}
+                            </strong>
+                            <span>
+                                {% if request.user.is_authenticated %}
+                                    Личный кабинет
+                                {% else %}
+                                    Твой трекер тренировок
+                                {% endif %}
+                            </span>
+                        </div>
+                    </div>
+                </header>
+
+                {% if messages %}
+                    <div class="messages-stack">
+                        {% for message in messages %}
+                            <div class="flash-message">{{ message }}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <main class="page-content">
+                    {% block content %}{% endblock %}
+                </main>
+            </div>
+        </div>
+    {% endwith %}
+</body>
+</html>

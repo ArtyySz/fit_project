@@ -1,13 +1,19 @@
-<h1>Регистрация</h1>
+{% extends "main/base.html" %}
 
-<form method="post">
-  {% csrf_token %}
-  {{ form.as_p }}
+{% block title %}Регистрация | FitFlow{% endblock %}
+{% block eyebrow %}Аккаунт{% endblock %}
+{% block page_title %}Регистрация{% endblock %}
+{% block page_subtitle %}Создай аккаунт и подключи все возможности трекера к своему профилю.{% endblock %}
 
-  <button type="submit">Зарегистрироваться</button>
-</form>
-
-<p>
-  Уже есть аккаунт?
-  <a href="{% url 'login' %}">Войти</a>
-</p>
+{% block content %}
+    <section class="panel form-panel auth-panel">
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <div class="button-row">
+                <button type="submit">Зарегистрироваться</button>
+                <a class="button-link secondary" href="{% url 'login' %}">Войти</a>
+            </div>
+        </form>
+    </section>
+{% endblock %}

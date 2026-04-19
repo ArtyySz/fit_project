@@ -1,32 +1,33 @@
-<h1>Мои тренировки</h1>
+{% extends "main/base.html" %}
 
-<nav>
-  <a href="{% url 'index' %}">Главная</a> |
-  <a href="{% url 'exercise_list' %}">Упражнения</a> |
-  <a href="{% url 'favorite_exercises' %}">Избранное</a> |
-  <a href="{% url 'plan_list' %}">План</a> |
-  <a href="{% url 'premade_workouts' %}">Готовые тренировки</a> |
-  <a href="{% url 'workout_history_list' %}">История</a> |
-  <a href="{% url 'profile' %}">Профиль</a> |
+{% block title %}Мои тренировки | FitFlow{% endblock %}
+{% block eyebrow %}Тренировки{% endblock %}
+{% block page_title %}Мои тренировки{% endblock %}
+{% block page_subtitle %}Все созданные тобой тренировки в одном аккуратном списке.{% endblock %}
 
-  <form method="post" action="{% url 'logout' %}" style="display:inline;">
-    {% csrf_token %}
-    <button type="submit">Выйти</button>
-  </form>
-</nav>
+{% block content %}
+    <section class="panel">
+        <div class="section-header">
+            <div>
+                <h2>Текущая библиотека</h2>
+                <p>Открывай, редактируй и дополняй свои тренировочные сценарии.</p>
+            </div>
+            <a class="button-link" href="{% url 'workout_create' %}">Создать тренировку</a>
+        </div>
 
-<hr>
-
-<a href="{% url 'workout_create' %}">Создать тренировку</a>
-
-<ul>
-  {% for workout in workouts %}
-    <li>
-      <a href="{% url 'workout_detail' workout.id %}">
-        {{ workout.name }}
-      </a>
-    </li>
-  {% empty %}
-    <li>Тренировок нет</li>
-  {% endfor %}
-</ul>
+        <div class="card-grid">
+            {% for workout in workouts %}
+                <article class="content-card">
+                    <span class="tag">Тренировка</span>
+                    <h3>{{ workout.name }}</h3>
+                    <p>{{ workout.description|default:"Описание пока не добавлено." }}</p>
+                    <div class="button-row">
+                        <a class="button-link secondary" href="{% url 'workout_detail' workout.id %}">Открыть</a>
+                    </div>
+                </article>
+            {% empty %}
+                <div class="empty-state">Тренировок пока нет.</div>
+            {% endfor %}
+        </div>
+    </section>
+{% endblock %}

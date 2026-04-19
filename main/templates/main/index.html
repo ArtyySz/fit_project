@@ -1,54 +1,104 @@
-<h1>Главная</h1>
+{% extends "main/base.html" %}
 
-<nav>
-  <a href="{% url 'index' %}">Главная</a> |
-  <a href="{% url 'workout_list' %}">Мои тренировки</a> |
-  <a href="{% url 'favorite_exercises' %}">Избранное</a> |
-  <a href="{% url 'exercise_list' %}">Упражнения</a> |
+{% block title %}Главная | FitFlow{% endblock %}
+{% block eyebrow %}Дашборд{% endblock %}
+{% block page_title %}Привет{% if request.user.is_authenticated %}, {{ request.user.username }}{% endif %}!{% endblock %}
+{% block page_subtitle %}Собрали быстрый обзор активности и самых полезных упражнений в одном экране.{% endblock %}
 
-  {% if user.is_authenticated %}
-    <a href="{% url 'plan_list' %}">План</a> |
-    <a href="{% url 'premade_workouts' %}">Готовые тренировки</a> |
-    <a href="{% url 'workout_history_list' %}">История</a> |
-    <a href="{% url 'profile' %}">Профиль</a> |
+{% block content %}
+    <section class="panel hero-panel">
+        <div class="hero-copy">
+            <span class="tag">Тёмная фитнес-панель</span>
+            <h2>Следи за прогрессом, возвращайся к любимым упражнениям и держи план под рукой.</h2>
+        </div>
 
-    <form method="post" action="{% url 'logout' %}" style="display:inline;">
-      {% csrf_token %}
-      <button type="submit">Выйти</button>
-    </form>
-  {% else %}
-    <a href="{% url 'login' %}">Войти</a> |
-    <a href="{% url 'register' %}">Регистрация</a>
-  {% endif %}
-</nav>
+        <div class="hero-stats">
+            <div class="mini-panel">
+                <span class="mini-label">Статус</span>
+                <span class="mini-value">{% if request.user.is_authenticated %}Активен{% else %}Гость{% endif %}</span>
+            </div>
+            <div class="mini-panel">
+                <span class="mini-label">Последних тренировок</span>
+                <span class="mini-value">{{ last_workouts|length }}</span>
+            </div>
+            <div class="mini-panel">
+                <span class="mini-label">Популярных упражнений</span>
+                <span class="mini-value">{{ popular_exercises|length }}</span>
+            </div>
+        </div>
+    </section>
 
-<hr>
+    <section class="stats-grid">
+        <article class="metric-card green">
+            <span class="metric-label">Активность</span>
+            <div class="metric-value">{{ workouts_count }}</div>
+            <div class="metric-note">Завершённых тренировок</div>
+        </article>
 
-<h3>Последние тренировки</h3>
-<ul>
-  {% for item in last_workouts %}
-    <li>
-      {{ item.workout.name }} —
-      {{ item.completed_at|date:"d.m.Y" }}
-    </li>
-  {% empty %}
-    <li>Тренировок пока нет</li>
-  {% endfor %}
-</ul>
+        <article class="metric-card blue">
+            <span class="metric-label">Недавние сессии</span>
+            <div class="metric-value">{{ last_workouts|length }}</div>
+            <div class="metric-note">Последних записей в истории</div>
+        </article>
 
-<hr>
+        <article class="metric-card violet">
+            <span class="metric-label">Популярное</span>
+            <div class="metric-value">{{ popular_exercises|length }}</div>
+            <div class="metric-note">Упражнений в подборке</div>
+        </article>
 
-<h3>Популярные упражнения</h3>
-<ul>
-  {% for exercise in popular_exercises %}
-    <li>
-      <a href="{% url 'exercise_detail' exercise.id %}">
-        {{ exercise.name }}
-      </a>
-    </li>
-  {% empty %}
-    <li>Нет данных</li>
-  {% endfor %}
-</ul>
+        <article class="metric-card orange">
+            <span class="metric-label">Фокус</span>
+            <div class="metric-value">{% if request.user.is_authenticated %}Fit{% else %}Go{% endif %}</div>
+            <div class="metric-note">Режим на сегодня</div>
+        </article>
+    </section>
 
-<p>Всего завершённых тренировок: {{ workouts_count }}</p>
+    <section class="split-grid">
+        <article class="panel">
+            <div class="section-header">
+                <div>
+                    <h2>Последние тренировки</h2>
+                    <p>Сессии, которые уже сохранены в твоей истории.</p>
+                </div>
+            </div>
+
+            <ul class="stack-list">
+                {% for item in last_workouts %}
+                    <li class="stack-item">
+                        <div>
+                            <strong>{{ item.workout.name }}</strong>
+                            <span class="muted">{{ item.completed_at|date:"d.m.Y H:i" }}</span>
+                        </div>
+                        <span class="pill">{{ item.duration_minutes }} мин</span>
+                    </li>
+                {% empty %}
+                    <li class="empty-state">Тренировок пока нет.</li>
+                {% endfor %}
+            </ul>
+        </article>
+
+        <article class="panel">
+            <div class="section-header">
+                <div>
+                    <h2>Популярные упражнения</h2>
+                    <p>То что ты любишь.</p>
+                </div>
+            </div>
+
+            <div class="card-grid">
+                {% for exercise in popular_exercises %}
+                    <article class="content-card">
+                        <span class="tag violet">Упражнение</span>
+                        <h3>{{ exercise.name }}</h3>
+                        <div class="button-row">
+                            <a class="button-link secondary" href="{% url 'exercise_detail' exercise.id %}">Открыть</a>
+                        </div>
+                    </article>
+                {% empty %}
+                    <div class="empty-state">Нет данных для показа.</div>
+                {% endfor %}
+            </div>
+        </article>
+    </section>
+{% endblock %}

@@ -1,70 +1,75 @@
-<h1>{{ exercise.name }}</h1>
+{% extends "main/base.html" %}
 
-<nav>
-  <a href="{% url 'index' %}">Главная</a> |
-  <a href="{% url 'exercise_list' %}">Упражнения</a> |
-  <a href="{% url 'favorite_exercises' %}">Избранное</a> |
-  <a href="{% url 'workout_list' %}">Мои тренировки</a> |
-  <a href="{% url 'plan_list' %}">План</a> |
-  <a href="{% url 'premade_workouts' %}">Готовые тренировки</a> |
-  <a href="{% url 'profile' %}">Профиль</a> |
+{% block title %}{{ exercise.name }} | FitFlow{% endblock %}
+{% block eyebrow %}Упражнение{% endblock %}
+{% block page_title %}{{ exercise.name }}{% endblock %}
+{% block page_subtitle %}Подробная карточка упражнения с описанием, группами мышц и шагами выполнения.{% endblock %}
 
-  <form method="post" action="{% url 'logout' %}" style="display:inline;">
-    {% csrf_token %}
-    <button type="submit">Выйти</button>
-  </form>
-</nav>
+{% block content %}
+    <section class="panel">
+        <div class="section-header">
+            <div>
+                <h2>Описание</h2>
+                <p>{{ exercise.description|default:"Описание пока не заполнено." }}</p>
+            </div>
 
-<hr>
+            <form method="post" action="{% url 'toggle_favorite' exercise.id %}">
+                {% csrf_token %}
+                {% if is_favorite %}
+                    <button type="submit" class="secondary">Убрать из избранного</button>
+                {% else %}
+                    <button type="submit">Добавить в избранное</button>
+                {% endif %}
+            </form>
+        </div>
+    </section>
 
-<p><strong>Описание:</strong></p>
-<p>{{ exercise.description }}</p>
+    <section class="details-grid two">
+        <article class="panel">
+            <h2>Основные данные</h2>
+            <div class="details-grid">
+                <div class="detail-box">
+                    <strong>Группы мышц</strong>
+                    <div>
+                        {% for group in exercise.muscle_groups.all %}
+                            {{ group.name }}{% if not forloop.last %}, {% endif %}
+                        {% empty %}
+                            —
+                        {% endfor %}
+                    </div>
+                </div>
 
-<hr>
+                <div class="detail-box">
+                    <strong>Сложность</strong>
+                    <div>
+                        {% if exercise.difficulty == "beginner" %}
+                            Начинающий
+                        {% elif exercise.difficulty == "intermediate" %}
+                            Средний
+                        {% elif exercise.difficulty == "advanced" %}
+                            Продвинутый
+                        {% else %}
+                            —
+                        {% endif %}
+                    </div>
+                </div>
 
-<p>
-  <strong>Группы мышц:</strong>
-  {% for group in exercise.muscle_groups.all %}
-    {{ group.name }}{% if not forloop.last %}, {% endif %}
-  {% empty %}
-    —
-  {% endfor %}
-</p>
+                <div class="detail-box">
+                    <strong>Оборудование</strong>
+                    <div>{{ exercise.equipment|default:"—" }}</div>
+                </div>
+            </div>
+        </article>
 
-<p>
-  <strong>Сложность:</strong>
-  {% if exercise.difficulty == "beginner" %}
-    Начинающий
-  {% elif exercise.difficulty == "intermediate" %}
-    Средний
-  {% elif exercise.difficulty == "advanced" %}
-    Продвинутый
-  {% else %}
-    —
-  {% endif %}
-</p>
+        <article class="panel">
+            <h2>Шаги выполнения</h2>
+            <div class="detail-box detail-copy">{{ exercise.execution_steps|default:"Шаги пока не добавлены." }}</div>
+        </article>
+    </section>
 
-<p>
-  <strong>Оборудование:</strong><br>
-  {{ exercise.equipment|default:"—" }}
-</p>
-
-<hr>
-
-<p><strong>Шаги выполнения:</strong></p>
-<p style="white-space: pre-line;">{{ exercise.execution_steps }}</p>
-
-<hr>
-
-<form method="post" action="{% url 'toggle_favorite' exercise.id %}">
-  {% csrf_token %}
-  {% if is_favorite %}
-    <button type="submit">Убрать из избранного</button>
-  {% else %}
-    <button type="submit">Добавить в избранное</button>
-  {% endif %}
-</form>
-
-<br>
-
-<a href="{% url 'exercise_list' %}">← Назад к упражнениям</a>
+    <section class="panel">
+        <div class="button-row">
+            <a class="button-link secondary" href="{% url 'exercise_list' %}">Назад к упражнениям</a>
+        </div>
+    </section>
+{% endblock %}

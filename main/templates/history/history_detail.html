@@ -1,31 +1,36 @@
-<h1>Детали завершённой тренировки</h1>
+{% extends "main/base.html" %}
 
-<nav>
-  <a href="{% url 'index' %}">Главная</a> |
-  <a href="{% url 'workout_history_list' %}">История</a> |
-  <a href="{% url 'workout_list' %}">Мои тренировки</a> |
-  <a href="{% url 'profile' %}">Профиль</a>
-</nav>
+{% block title %}Детали истории | FitFlow{% endblock %}
+{% block eyebrow %}История{% endblock %}
+{% block page_title %}{{ history_item.workout.name }}{% endblock %}
+{% block page_subtitle %}Завершена {{ history_item.completed_at|date:"d.m.Y H:i" }}. Длительность: {{ history_item.duration_minutes }} мин.{% endblock %}
 
-<hr>
+{% block content %}
+    <section class="panel">
+        <div class="section-header">
+            <div>
+                <h2>Упражнения</h2>
+                <p>Состав тренировки на момент завершения.</p>
+            </div>
+        </div>
 
-<h2>{{ history_item.workout.name }}</h2>
-<p><strong>Дата выполнения:</strong> {{ history_item.completed_at|date:"d.m.Y H:i" }}</p>
-<p><strong>Длительность:</strong> {{ history_item.duration_minutes }} мин</p>
+        <ul class="stack-list">
+            {% for item in workout_exercises %}
+                <li class="stack-item">
+                    <div>
+                        <strong>{{ item.exercise.name }}</strong>
+                        <span class="muted">{{ item.sets }} подходов x {{ item.reps }} повторений</span>
+                    </div>
+                </li>
+            {% empty %}
+                <li class="empty-state">Упражнений нет.</li>
+            {% endfor %}
+        </ul>
+    </section>
 
-<hr>
-
-<h3>Упражнения</h3>
-
-<ul>
-  {% for item in workout_exercises %}
-    <li>
-      {{ item.exercise.name }} — {{ item.sets }}x{{ item.reps }}
-    </li>
-  {% empty %}
-    <li>Упражнений нет</li>
-  {% endfor %}
-</ul>
-
-<br>
-<a href="{% url 'workout_history_list' %}">← Назад к истории</a>
+    <section class="panel">
+        <div class="button-row">
+            <a class="button-link secondary" href="{% url 'workout_history_list' %}">Назад к истории</a>
+        </div>
+    </section>
+{% endblock %}
