@@ -19,6 +19,7 @@ from .models import (
     WorkoutExercise,
     WorkoutHistory,
     PlanDay,
+    Profile,
 )
 from .forms import ProfileForm
 
@@ -237,7 +238,7 @@ def complete_workout(request, workout_id):
                 duration_minutes=duration
             )
 
-            profile = request.user.profile
+            profile, _ = Profile.objects.get_or_create(user=request.user)
             profile.total_workouts += 1
             profile.total_exercises_done += exercises_count
             latest_history = WorkoutHistory.objects.filter(user=request.user).first()
