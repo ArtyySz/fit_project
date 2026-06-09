@@ -345,7 +345,6 @@ def premade_workouts(request):
         "workouts": workouts
     })
 
-
 @login_required
 def copy_premade_workout(request, workout_id):
     premade = get_object_or_404(Workout, id=workout_id, is_premade=True)
